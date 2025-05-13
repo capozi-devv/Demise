@@ -1,23 +1,26 @@
 package net.capozi.demise.mixin;
 
+import net.capozi.demise.TrinketsHelper;
 import net.capozi.demise.common.GameruleRegistry;
-import net.capozi.demise.common.TwoHanded;
 import net.capozi.demise.common.entity.EntityTypeRegistry;
 import net.capozi.demise.common.entity.PlayerRemainsEntity;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.world.GameRules;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.capozi.demise.common.TwoHanded;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+
     @Shadow protected abstract void consumeItem();
 
     @Inject(method = "getOffHandStack", at = @At("HEAD"), cancellable = true)
@@ -26,7 +29,6 @@ public abstract class LivingEntityMixin {
             if(player.getMainHandStack().getItem() instanceof TwoHanded) cir.setReturnValue(new ItemStack(Items.AIR));
         }
     }
-
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onDeath(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void grimoire$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if(((LivingEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE) && (Object)this instanceof PlayerEntity player) {
