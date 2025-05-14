@@ -18,6 +18,9 @@
 		"main": [
 			"net.capozi.demise.Demise"
 		],
+		"client":[
+			"net.capozi.demise.DemiseClient"
+		],
 		"fabric-datagen": [
 			"net.capozi.demise.DemiseDataGenerator"
 		]
