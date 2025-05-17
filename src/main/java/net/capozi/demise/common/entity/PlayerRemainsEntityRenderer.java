@@ -28,8 +28,6 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
         ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
         float angle = (entity.getWorld().getTime() + tickDelta) * 2.5f;
-        BakedModel model = itemRenderer.getModel(stack, entity.getWorld(), null, 0);
-        Transformation groundTransform = model.getTransformation().ground;
 
         matrixStack.push();
         matrixStack.scale(1.5f, 1.5f, 1.5f);
