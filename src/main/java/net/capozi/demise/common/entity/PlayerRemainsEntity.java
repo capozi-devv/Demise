@@ -162,11 +162,11 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     }
     @Override
     public boolean isPushable() {
-        return false;
+        return true;
     }
     @Override
     public boolean isPushedByFluids() {
-        return false;
+        return true;
     }
     @Override
     protected void initDataTracker() {
@@ -178,13 +178,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         return null;
     }
     @Override
-    public void setLootTableId(@Nullable Identifier lootTableId) {
-
-    }
-    @Override
-    public long getLootTableSeed() {
-        return 0;
-    }
+    public void setLootTableId(@Nullable Identifier lootTableId) {}
     @Override
     public void setLootTableSeed(long lootTableSeed) {
 
