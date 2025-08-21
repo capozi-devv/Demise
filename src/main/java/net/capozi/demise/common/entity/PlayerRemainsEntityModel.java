@@ -14,13 +14,11 @@ public class PlayerRemainsEntityModel<T extends PlayerRemainsEntity> extends Ent
     public void setAngles(PlayerRemainsEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
 
     }
-
-    @Override
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-
-    }
-
     public static TexturedModelData getTexturedModelData() {
         return TexturedModelData.of(null, 8, 8);
+    }
+    @Override
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+
     }
 }

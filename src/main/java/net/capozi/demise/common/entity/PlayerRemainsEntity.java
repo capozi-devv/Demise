@@ -4,12 +4,16 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.VehicleInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
+import net.minecraft.loot.LootTable;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.ActionResult;
@@ -25,6 +29,7 @@ import java.util.Collections;
 public class PlayerRemainsEntity extends LivingEntity implements VehicleInventory {
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
     private DefaultedList<ItemStack> inventory;
+    private RegistryWrapper.WrapperLookup wrapper;
 
     public PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -40,12 +45,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
-        Inventories.readNbt(nbt, this.getInventory());
+        Inventories.readNbt(nbt, this.getInventory(), wrapper);
     }
     @Override
     public void writeCustomDataToNbt(NbtCompound nbt) {
         super.writeCustomDataToNbt(nbt);
-        Inventories.writeNbt(nbt, this.getInventory());
+        Inventories.writeNbt(nbt, this.getInventory(), wrapper);
     }
     @Override
     public boolean damage(DamageSource source, float amount) {
@@ -170,21 +175,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         return false;
     }
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-    }
-    //region// No clue //
-    @Override
-    public @Nullable Identifier getLootTableId() {
-        return null;
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
     }
     @Override
-    public void setLootTableId(@Nullable Identifier lootTableId) {
+    public void setLootTable(@Nullable RegistryKey<LootTable> lootTable) {
 
-    }
-    @Override
-    public long getLootTableSeed() {
-        return 0;
     }
     @Override
     public void setLootTableSeed(long lootTableSeed) {
