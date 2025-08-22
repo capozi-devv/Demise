@@ -16,6 +16,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -38,9 +39,9 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     }
     public static DefaultAttributeContainer.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0f)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 100f)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0f);
+                .add(EntityAttributes.MOVEMENT_SPEED, 0f)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 100f)
+                .add(EntityAttributes.FOLLOW_RANGE, 0f);
     }
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
@@ -52,8 +53,9 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         super.writeCustomDataToNbt(nbt);
         Inventories.writeNbt(nbt, this.getInventory(), wrapper);
     }
+
     @Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if(source.getAttacker() instanceof PlayerEntity player) {
             if(player.isSneaking()) {
                 if(getEntityWorld().isClient) return true;
@@ -80,7 +82,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         this.open(player);
         return ActionResult.SUCCESS; // Prevent further interaction processing
     }
-    @Override
     protected void dropInventory() {
         for (ItemStack stack : inventory) {
             if (stack.isEmpty()) continue;
@@ -178,6 +179,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
     }
+
+    @Override
+    public @Nullable RegistryKey<LootTable> getLootTable() {
+        return null;
+    }
+
     @Override
     public void setLootTable(@Nullable RegistryKey<LootTable> lootTable) {
 
