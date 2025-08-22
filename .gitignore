@@ -1,0 +1,23 @@
+# Ignore Gradle cache and build outputs
+.gradle/
+build/
+
+# Ignore IntelliJ IDEA project files
+*.iml
+.idea/
+
+# Ignore Eclipse project files
+.classpath
+.project
+.settings/
+
+# Ignore VS Code settings
+.vscode/
+
+# Ignore logs and crash reports
+*.log
+crash-reports/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
