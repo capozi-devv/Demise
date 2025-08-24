@@ -41,7 +41,7 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
 
         matrixStack.pop();
        if(entity.getCustomName() != null) {
-           this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light);
+           this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light, tickDelta);
        }
     }
 

@@ -1,5 +1,6 @@
 package net.capozi.demise;
 
+import net.capozi.demise.common.GameruleRegistry;
 import net.capozi.demise.common.entity.EntityTypeRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -13,6 +14,7 @@ public class Demise implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EntityTypeRegistry.register();
+        GameruleRegistry.register();
 	}
 	public static Identifier id(String name) {
 		return Identifier.of(MOD_ID, name);

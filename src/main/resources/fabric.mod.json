@@ -2,36 +2,34 @@
 	"schemaVersion": 1,
 	"id": "demise",
 	"version": "${version}",
-	"name": "demsie",
+	"name": "demise",
 	"description": "Death is an Inconvenience! Why not Fix That?",
 	"authors": [
-		"Capozi"
+		"Capozi",
+        "Nico_44"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "GPL v3.0",
-	"icon": "assets/demsie/icon.png",
+	"icon": "assets/demise/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"net.capozi.demise.Demise"
-		],
-		"fabric-datagen": [
-			"net.capozi.demise.DemiseDataGenerator"
 		],
 		"client": [
 			"net.capozi.demise.DemiseClient"
 		]
 	},
 	"mixins": [
-		"demsie.mixins.json"
+		"demise.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.11",
-		"minecraft": "~1.20.1",
-		"java": ">=17",
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
 		"fabric-api": "*"
 	},
 	"suggests": {
