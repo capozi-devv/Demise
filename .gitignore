@@ -17,7 +17,7 @@ build/
 # Ignore logs and crash reports
 *.log
 crash-reports/
-
+run/
 # Ignore OS-specific files
 .DS_Store
 Thumbs.db
