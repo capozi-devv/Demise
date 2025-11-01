@@ -1,5 +1,6 @@
 package net.capozi.demise.common.entity;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -52,6 +53,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             if(player.isSneaking()) {
                 if(getEntityWorld().isClient) return true;
                 this.dropInventory();
+                this.clearInventory();
                 this.discard();
                 return true;
             }
@@ -187,5 +189,21 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     public void markDirty() {
 
     }
-    //endregion
+
+    @Override
+    public void tick() {
+        if(!this.isAlive()) {
+             PlayerEntity player = MinecraftClient.getInstance().player;
+            if (player.currentScreenHandler != player.playerScreenHandler) {
+                // Check if the open inventory belongs to THIS horse
+                if (player.currentScreenHandler instanceof GenericContainerScreenHandler handler) {
+                    this.closeHandleScreen();
+                }
+            }
+        }
+    }
+    protected void closeHandleScreen() {
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        player.currentScreenHandler = player.playerScreenHandler;
+    }
 }
