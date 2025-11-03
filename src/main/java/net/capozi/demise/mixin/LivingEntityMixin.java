@@ -31,7 +31,8 @@ public abstract class LivingEntityMixin {
     }
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onDeath(Lnet/minecraft/entity/damage/DamageSource;)V"))
     private void grimoire$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if(((LivingEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE) && (Object)this instanceof PlayerEntity player) {
+        if((Object)this instanceof PlayerEntity player) {
+            if(!((LivingEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) return;
             if(player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
 
             PlayerRemainsEntity playerRemainsEntity = new PlayerRemainsEntity(EntityTypeRegistry.PLAYER_REMAINS_TYPE, player.getWorld());
