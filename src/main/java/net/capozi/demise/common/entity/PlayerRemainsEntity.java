@@ -16,6 +16,7 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -56,7 +57,9 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     public boolean damage(DamageSource source, float amount) {
         if(source.getAttacker() instanceof PlayerEntity player) {
             if(player.isSneaking()) {
+                ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
                 if(getEntityWorld().isClient) return true;
+                serverPlayer.closeHandledScreen();
                 this.dropInventory();
                 this.discard();
                 return true;
