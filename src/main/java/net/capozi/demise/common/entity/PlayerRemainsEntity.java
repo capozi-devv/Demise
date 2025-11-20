@@ -13,6 +13,7 @@ import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -189,15 +190,24 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     public void markDirty() {
 
     }
-
+    @Override
+    public void onDeath(DamageSource damageSource) {
+        super.onDeath(damageSource);
+        PlayerEntity player = MinecraftClient.getInstance().player;
+        if (player.currentScreenHandler != player.playerScreenHandler) {
+            if (player.currentScreenHandler instanceof GenericContainerScreenHandler handler) {
+                closeHandleScreen();
+            }
+        }
+    }
     @Override
     public void tick() {
+        super.tick();
         if(!this.isAlive()) {
-             PlayerEntity player = MinecraftClient.getInstance().player;
+            PlayerEntity player = MinecraftClient.getInstance().player;
             if (player.currentScreenHandler != player.playerScreenHandler) {
-                // Check if the open inventory belongs to THIS horse
                 if (player.currentScreenHandler instanceof GenericContainerScreenHandler handler) {
-                    this.closeHandleScreen();
+                    closeHandleScreen();
                 }
             }
         }
