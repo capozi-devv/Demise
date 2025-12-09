@@ -22,10 +22,13 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
+import java.util.List;
 
 public class PlayerRemainsEntity extends LivingEntity implements VehicleInventory {
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
@@ -55,12 +58,27 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     }
     @Override
     public boolean damage(DamageSource source, float amount) {
-        if(source.getAttacker() instanceof PlayerEntity player) {
+        if (source.getAttacker() instanceof PlayerEntity player) {
             if(player.isSneaking()) {
-                ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
                 if(getEntityWorld().isClient) return true;
-                serverPlayer.closeHandledScreen();
                 this.dropInventory();
+                this.clearInventory();
+                Vec3d center = this.getPos();
+                double radius = 10.0;
+                Box box = new Box(
+                        center.x - radius, center.y - (radius/2), center.z - radius,
+                        center.x + radius, center.y + (radius/2), center.z + radius
+                );
+                List<LivingEntity> entities = this.getWorld().getEntitiesByClass(
+                        LivingEntity.class,
+                        box,
+                        e -> e.squaredDistanceTo(center) <= radius * radius
+                );
+                for (LivingEntity entity : entities) {
+                    if (entity instanceof ServerPlayerEntity playerEntity) {
+                        playerEntity.closeHandledScreen();
+                    }
+                }
                 this.discard();
                 return true;
             }
