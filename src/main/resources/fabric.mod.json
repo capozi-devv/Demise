@@ -3,9 +3,9 @@
 	"id": "demise",
 	"version": "${version}",
 	"name": "Demise",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Death is inconvenient? Not Anymore!",
 	"authors": [
-		"Me!"
+		"Capozi"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
