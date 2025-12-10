@@ -11,10 +11,7 @@ import net.minecraft.registry.Registry;
 
 public class EntityTypeRegistry {
     //public static final EntityModelLayer PLAYER_REMAINS_MODEL_LAYER = new EntityModelLayer(Grimoire.id("player_remains"), "main");
-    public static final EntityType<PlayerRemainsEntity> PLAYER_REMAINS_TYPE = Registry.register(Registries.ENTITY_TYPE,
-            Demise.id("player_remains"),
-            FabricEntityTypeBuilder.create(SpawnGroup.MISC, PlayerRemainsEntity::new).dimensions(EntityDimensions.changing(0.8f, 0.8f)).build());
-
+    public static final EntityType<PlayerRemainsEntity> PLAYER_REMAINS_TYPE = Registry.register(Registries.ENTITY_TYPE, Demise.id("player_remains"), FabricEntityTypeBuilder.create(SpawnGroup.MISC, PlayerRemainsEntity::new).dimensions(EntityDimensions.changing(0.8f, 0.8f)).build());
     public static void register() {
         FabricDefaultAttributeRegistry.register(PLAYER_REMAINS_TYPE, PlayerRemainsEntity.createAttributes());
     }
