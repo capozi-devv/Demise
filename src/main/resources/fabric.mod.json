@@ -12,7 +12,7 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "GPL v3.0",
-	"icon": "assets/demsie/icon.png",
+	"icon": "assets/demise/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
@@ -26,7 +26,7 @@
 		]
 	},
 	"mixins": [
-		"demsie.mixins.json"
+		"demise.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.16.10",
