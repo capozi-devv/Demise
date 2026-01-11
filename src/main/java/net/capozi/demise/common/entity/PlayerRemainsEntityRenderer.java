@@ -14,7 +14,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
 import org.joml.Quaternionf;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.sin;
 
 @Environment(EnvType.CLIENT)
 public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRemainsEntity, PlayerRemainsEntityModel<PlayerRemainsEntity>> {
@@ -22,25 +26,20 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
         super(ctx, new PlayerRemainsEntityModel<>(), 0.3f);
     }
 
-
+    ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
     @Override
     public void render(PlayerRemainsEntity entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
-        ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
-        float angle = (entity.getWorld().getTime() + tickDelta) * 2.5f;
-
         matrixStack.push();
-        matrixStack.scale(1.5f, 1.5f, 1.5f);
-        matrixStack.translate(0, 0.25, 0);
-        matrixStack.translate(0, Math.sin((entity.getWorld().getTime() + tickDelta)*0.1f)*0.1f, 0);
-        matrixStack.multiply(new Quaternionf().fromAxisAngleDeg(0, 1, 0, angle));
-
+        matrixStack.scale(1.7f, 1.7f, 1.7f);
+        matrixStack.translate(0, 0.2, 0);
+        matrixStack.translate(0, (abs(sin((float)entity.age / 15) + 1) / 7), 0);
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)entity.age / 20));
         itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
-
         matrixStack.pop();
-       if(entity.getCustomName() != null) {
-           this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light);
-       }
+        if(entity.getCustomName() != null) {
+            this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light);
+        }
     }
 
     @Override
