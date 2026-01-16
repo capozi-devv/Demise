@@ -61,8 +61,8 @@ public abstract class LivingEntityMixin {
             }
 
             playerRemainsEntity.setCustomName(player.getDisplayName());
+            playerRemainsEntity.playerFor = player;
             playerRemainsEntity.setCustomNameVisible(true);
-
             player.getWorld().spawnEntity(playerRemainsEntity);
             player.getInventory().clear();
         }

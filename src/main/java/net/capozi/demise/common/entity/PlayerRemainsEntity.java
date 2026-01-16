@@ -1,6 +1,5 @@
 package net.capozi.demise.common.entity;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -27,9 +26,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class PlayerRemainsEntity extends LivingEntity implements VehicleInventory {
+    public PlayerEntity playerFor;
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
     private DefaultedList<ItemStack> inventory;
-
     public PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
         this.setInvulnerable(true);
@@ -175,9 +174,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         return new ItemStack(Items.AIR);
     }
     @Override
-    public void equipStack(EquipmentSlot slot, ItemStack stack) {
-
-    }
+    public void equipStack(EquipmentSlot slot, ItemStack stack) {}
     @Override
     public Arm getMainArm() {
         return Arm.RIGHT;
@@ -202,11 +199,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     @Override
     public void setLootTableId(@Nullable Identifier lootTableId) {}
     @Override
-    public void setLootTableSeed(long lootTableSeed) {
-
-    }
+    public void setLootTableSeed(long lootTableSeed) {}
     @Override
-    public void markDirty() {
-
-    }
+    public void markDirty() {}
 }
