@@ -24,29 +24,25 @@ public abstract class LivingEntityMixin {
     @Shadow protected abstract void consumeItem();
 
     @Inject(method = "getOffHandStack", at = @At("HEAD"), cancellable = true)
-    public void grimoire$getOffHandStack(CallbackInfoReturnable<ItemStack> cir) {
+    public void demise$getOffHandStack(CallbackInfoReturnable<ItemStack> cir) {
         if((LivingEntity)(Object)this instanceof PlayerEntity player) {
             if(player.getMainHandStack().getItem() instanceof TwoHanded) cir.setReturnValue(new ItemStack(Items.AIR));
         }
     }
     @Inject(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;onDeath(Lnet/minecraft/entity/damage/DamageSource;)V"))
-    private void grimoire$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+    private void demise$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if((Object)this instanceof PlayerEntity player) {
             if(!((LivingEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) return;
             if(player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
-
-            PlayerRemainsEntity playerRemainsEntity = new PlayerRemainsEntity(EntityTypeRegistry.PLAYER_REMAINS_TYPE, player.getWorld());
+            PlayerRemainsEntity playerRemainsEntity = PlayerRemainsEntity.create(EntityTypeRegistry.PLAYER_REMAINS_TYPE, player.getWorld(), player);
             playerRemainsEntity.setPosition(player.getPos());
-
             playerRemainsEntity.resetInventory();
-
             for(int i = 0;i<player.getInventory().main.size();i++) {
                 playerRemainsEntity.addInventoryStack(player.getInventory().main.get(i).copy());
             }
             for(int i = 0;i<player.getInventory().offHand.size();i++) {
                 playerRemainsEntity.addInventoryStack(player.getInventory().offHand.get(i).copy());
             }
-
             for(int i = 0;i<player.getInventory().armor.size();i++) {
                 playerRemainsEntity.addInventoryStack(player.getInventory().armor.get(i).copy());
             }
@@ -59,9 +55,7 @@ public abstract class LivingEntityMixin {
                     } catch (Exception ingore) {}
                 }
             }
-
             playerRemainsEntity.setCustomName(player.getDisplayName());
-            playerRemainsEntity.playerFor = player;
             playerRemainsEntity.setCustomNameVisible(true);
             player.getWorld().spawnEntity(playerRemainsEntity);
             player.getInventory().clear();

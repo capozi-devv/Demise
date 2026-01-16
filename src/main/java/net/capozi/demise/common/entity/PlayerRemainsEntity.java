@@ -29,10 +29,19 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     public PlayerEntity playerFor;
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
     private DefaultedList<ItemStack> inventory;
-    public PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
+    protected PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
         this.setInvulnerable(true);
         this.inventory = DefaultedList.ofSize(MAX_SIZE, ItemStack.EMPTY);
+    }
+    private PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world, PlayerEntity player) {
+        super(entityType, world);
+        this.setInvulnerable(true);
+        this.playerFor = player;
+        this.inventory = DefaultedList.ofSize(MAX_SIZE, ItemStack.EMPTY);
+    }
+    public static PlayerRemainsEntity create(EntityType<? extends LivingEntity> type, World world, PlayerEntity player) {
+        return new PlayerRemainsEntity(type, world, player);
     }
     public static DefaultAttributeContainer.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()

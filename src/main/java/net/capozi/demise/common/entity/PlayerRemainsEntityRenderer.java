@@ -42,14 +42,18 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
     @Override
     public void render(PlayerRemainsEntity entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
-        ItemStack headStack = getHead(entity.playerFor);
         matrixStack.push();
         matrixStack.scale(1.7f, 1.7f, 1.7f);
         matrixStack.translate(0, 0.2, 0);
         matrixStack.translate(0, (abs(sin((float)entity.age / 15) + 1) / 7), 0);
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)entity.age / 20));
         if (entity.getWorld().getGameRules().getBoolean(GameruleRegistry.RENDER_AS_HEADS)) {
-            itemRenderer.renderItem(headStack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
+            try {
+                ItemStack headStack = getHead(entity.playerFor);
+                itemRenderer.renderItem(headStack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
+            } catch (Exception e) {
+                itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
+            }
         } else {
             itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
         }

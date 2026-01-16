@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
     @Inject(method = "dropInventory", at = @At("HEAD"), cancellable = true)
-    public void dropInventory(CallbackInfo ci) {
+    public void demise$dropInventory(CallbackInfo ci) {
         if(((PlayerEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) ci.cancel();
     }
 }
