@@ -1,5 +1,6 @@
 package net.capozi.demise.common.entity;
 
+import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -10,6 +11,7 @@ import net.minecraft.entity.vehicle.VehicleInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -48,6 +50,13 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0f)
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 100f)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0f);
+    }
+    public ItemStack createPlayerHead() {
+        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
+        NbtCompound skullOwner = new NbtCompound();
+        NbtHelper.writeGameProfile(skullOwner, playerFor.getGameProfile());
+        stack.getOrCreateNbt().put("SkullOwner", skullOwner);
+        return stack;
     }
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {

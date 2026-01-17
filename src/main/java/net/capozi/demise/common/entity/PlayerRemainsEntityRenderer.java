@@ -29,16 +29,7 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
         super(ctx, new PlayerRemainsEntityModel<>(), 0.3f);
     }
     ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-    public static ItemStack createPlayerHead(GameProfile profile) {
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        NbtCompound skullOwner = new NbtCompound();
-        NbtHelper.writeGameProfile(skullOwner, profile);
-        stack.getOrCreateNbt().put("SkullOwner", skullOwner);
-        return stack;
-    }
-    public static ItemStack getHead(PlayerEntity player) {
-        return createPlayerHead(player.getGameProfile());
-    }
+
     @Override
     public void render(PlayerRemainsEntity entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
@@ -48,12 +39,7 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
         matrixStack.translate(0, (abs(sin((float)entity.age / 15) + 1) / 7), 0);
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)entity.age / 20));
         if (entity.getWorld().getGameRules().getBoolean(GameruleRegistry.RENDER_AS_HEADS)) {
-            try {
-                ItemStack headStack = getHead(entity.playerFor);
-                itemRenderer.renderItem(headStack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
-            } catch (Exception e) {
-                itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
-            }
+            itemRenderer.renderItem(entity.createPlayerHead(), ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(entity.createPlayerHead(), entity.getWorld(), null, 0));
         } else {
             itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
         }
