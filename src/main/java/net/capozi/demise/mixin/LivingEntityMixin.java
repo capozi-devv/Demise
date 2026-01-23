@@ -23,8 +23,8 @@ public class LivingEntityMixin {
                     target = "Lnet/minecraft/entity/LivingEntity;onDeath(Lnet/minecraft/entity/damage/DamageSource;)V"
             )
     )
-    private void grimoire$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (!((Object)this instanceof PlayerEntity player)) return;
+    private void demise$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (!((LivingEntity)(Object)this instanceof PlayerEntity player)) return;
 
         if (player.getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) {
             if (player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
