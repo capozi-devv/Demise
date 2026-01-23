@@ -1,10 +1,14 @@
 package net.capozi.demise.common.entity;
 
 import com.mojang.authlib.GameProfile;
+import net.capozi.demise.common.GameruleRegistry;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.VehicleInventory;
@@ -204,10 +208,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     @Override
     public boolean isPushedByFluids() {
         return true;
-    }
-    @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
     }
     //region// No clue //
     @Override

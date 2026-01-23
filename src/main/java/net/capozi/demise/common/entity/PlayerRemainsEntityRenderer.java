@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
 import static java.lang.Math.abs;
@@ -34,15 +35,11 @@ public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRema
     public void render(PlayerRemainsEntity entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
         matrixStack.push();
-        matrixStack.scale(1.7f, 1.7f, 1.7f);
+        matrixStack.scale(1.5f, 1.5f, 1.5f);
         matrixStack.translate(0, 0.2, 0);
         matrixStack.translate(0, (abs(sin((float)entity.age / 15) + 1) / 7), 0);
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)entity.age / 20));
-        if (entity.getWorld().getGameRules().getBoolean(GameruleRegistry.RENDER_AS_HEADS)) {
-            itemRenderer.renderItem(entity.createPlayerHead(), ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(entity.createPlayerHead(), entity.getWorld(), null, 0));
-        } else {
-            itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
-        }
+        itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
         matrixStack.pop();
         if(entity.getCustomName() != null) {
             this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light);
