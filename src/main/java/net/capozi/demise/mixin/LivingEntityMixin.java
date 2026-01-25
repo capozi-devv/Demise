@@ -43,6 +43,7 @@ public class LivingEntityMixin {
             }
             remains.setCustomName(player.getDisplayName());
             remains.setCustomNameVisible(true);
+            remains.player = player;
             player.getWorld().spawnEntity(remains);
             player.getInventory().clear();
         }

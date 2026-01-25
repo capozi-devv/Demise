@@ -5,6 +5,8 @@ import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
+import net.minecraft.entity.data.TrackedData;
+import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.vehicle.VehicleInventory;
@@ -17,6 +19,8 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -34,7 +38,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
     private DefaultedList<ItemStack> inventory;
     private RegistryWrapper.WrapperLookup wrapper;
-
+    public PlayerEntity player;
     public PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
         this.setInvulnerable(true);
@@ -46,6 +50,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 100f)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0f);
     }
+
+    @Override
+    public boolean isGlowing() {
+        return true;
+    }
+
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
@@ -150,6 +160,28 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             }
             return result;
         }
+    }
+    @Override
+    public void onPlayerCollision(PlayerEntity player) {
+        if (this.getWorld().isClient) return;
+        if (!player.getGameProfile().getName().equals(player.getNameForScoreboard())) return;
+        for (int i = 0; i < inventory.size(); i++) {
+            if (!player.getInventory().insertStack(inventory.get(i))) {
+                player.dropItem(inventory.get(i), false);
+            } else {
+                this.getWorld().playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.ENTITY_ITEM_PICKUP,
+                        SoundCategory.PLAYERS,
+                        0.2F,
+                        (player.getSoundPitch() - player.getSoundPitch()) * 0.7F + 1.0F * 2.0F
+                );
+            }
+        }
+        discard();
     }
     @Override
     public ItemStack removeStack(int slot) {
