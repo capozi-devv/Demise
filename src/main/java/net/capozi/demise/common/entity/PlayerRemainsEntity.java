@@ -19,6 +19,8 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
@@ -55,13 +57,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 100f)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0f);
     }
-    public ItemStack createPlayerHead() {
-        ItemStack stack = new ItemStack(Items.PLAYER_HEAD);
-        NbtCompound skullOwner = new NbtCompound();
-        NbtHelper.writeGameProfile(skullOwner, playerFor.getGameProfile());
-        stack.getOrCreateNbt().put("SkullOwner", skullOwner);
-        return stack;
+
+    @Override
+    public boolean isGlowing() {
+        return true;
     }
+
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
         super.readCustomDataFromNbt(nbt);
@@ -133,6 +134,30 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 break;
             }
         }
+    }
+    @Override
+    public void onPlayerCollision(PlayerEntity player) {
+        if (this.getWorld().isClient) return;
+        if (!player.getGameProfile().getName().equals(playerFor.getEntityName())) return;
+
+        for (int i = 0; i < inventory.size(); i++) {
+            if (!player.getInventory().insertStack(inventory.get(i))) {
+                player.dropItem(inventory.get(i), false);
+            } else {
+                this.getWorld().playSound(
+                        null,
+                        player.getX(),
+                        player.getY(),
+                        player.getZ(),
+                        SoundEvents.ENTITY_ITEM_PICKUP,
+                        SoundCategory.PLAYERS,
+                        0.2F,
+                        (player.getSoundPitch() - player.getSoundPitch()) * 0.7F + 1.0F * 2.0F
+                );
+            }
+        }
+
+        discard();
     }
     @Override
     public DefaultedList<ItemStack> getInventory() {
