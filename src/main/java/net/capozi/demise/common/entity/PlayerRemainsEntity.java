@@ -33,6 +33,7 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerRemainsEntity extends LivingEntity implements VehicleInventory {
     private static final int MAX_SIZE = 27*2; // Maximum inventory size
@@ -164,6 +165,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         if (this.getWorld().isClient) return;
+        if (player == null) return;
         if (!player.getGameProfile().getName().equals(this.player.getNameForScoreboard())) return;
         for (int i = 0; i < inventory.size(); i++) {
             if (!player.getInventory().insertStack(inventory.get(i))) {
