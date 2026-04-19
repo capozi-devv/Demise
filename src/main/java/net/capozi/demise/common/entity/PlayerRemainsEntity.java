@@ -138,8 +138,8 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         if (this.getWorld().isClient) return;
+        if (this.playerFor == null) return;
         if (!player.getGameProfile().getName().equals(playerFor.getEntityName())) return;
-
         for (int i = 0; i < inventory.size(); i++) {
             if (!player.getInventory().insertStack(inventory.get(i))) {
                 player.dropItem(inventory.get(i), false);
