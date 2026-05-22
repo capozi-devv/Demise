@@ -25,7 +25,6 @@ public class LivingEntityMixin {
     )
     private void demise$onDeath(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (!((LivingEntity)(Object)this instanceof PlayerEntity player)) return;
-
         if (player.getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) {
             if (player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
             PlayerRemainsEntity remains = new PlayerRemainsEntity(EntityTypeRegistry.PLAYER_REMAINS_TYPE, player.getWorld());
