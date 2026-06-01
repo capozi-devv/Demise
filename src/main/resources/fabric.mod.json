@@ -8,7 +8,6 @@
 		"Capozi"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "GPL v3.0",

@@ -20,9 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-
-    @Shadow protected abstract void consumeItem();
-
     @Inject(method = "getOffHandStack", at = @At("HEAD"), cancellable = true)
     public void demise$getOffHandStack(CallbackInfoReturnable<ItemStack> cir) {
         if((LivingEntity)(Object)this instanceof PlayerEntity player) {
@@ -46,7 +43,6 @@ public abstract class LivingEntityMixin {
             for(int i = 0;i<player.getInventory().armor.size();i++) {
                 playerRemainsEntity.addInventoryStack(player.getInventory().armor.get(i).copy());
             }
-
             if(((LivingEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.SAVE_TRINKETS)) {
                 if(FabricLoader.getInstance().isModLoaded("trinkets")) {
                     try{
@@ -55,10 +51,12 @@ public abstract class LivingEntityMixin {
                     } catch (Exception ingore) {}
                 }
             }
-            playerRemainsEntity.setCustomName(player.getDisplayName());
-            playerRemainsEntity.setCustomNameVisible(true);
-            player.getWorld().spawnEntity(playerRemainsEntity);
-            player.getInventory().clear();
+            if (!player.getInventory().isEmpty()) {
+                playerRemainsEntity.setCustomName(player.getDisplayName());
+                playerRemainsEntity.setCustomNameVisible(true);
+                player.getWorld().spawnEntity(playerRemainsEntity);
+                player.getInventory().clear();
+            }
         }
     }
 }

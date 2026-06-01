@@ -13,7 +13,7 @@ public class PlayerEntityMixin {
     @Inject(method = "dropInventory", at = @At("HEAD"), cancellable = true)
     public void demise$dropInventory(CallbackInfo ci) {
         if (((PlayerEntity)(Object)this).getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
-        if(((PlayerEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) ci.cancel();
+        if (((PlayerEntity)(Object)this).getWorld().getGameRules().getBoolean(GameruleRegistry.CREATE_GRAVE)) ci.cancel();
     }
 }
 

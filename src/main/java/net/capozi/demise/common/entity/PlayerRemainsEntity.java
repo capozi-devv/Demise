@@ -2,6 +2,8 @@ package net.capozi.demise.common.entity;
 
 import com.mojang.authlib.GameProfile;
 import net.capozi.demise.common.GameruleRegistry;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.NetherPortalBlock;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -35,7 +37,7 @@ import java.util.List;
 
 public class PlayerRemainsEntity extends LivingEntity implements VehicleInventory {
     public PlayerEntity playerFor;
-    private static final int MAX_SIZE = 27*2; // Maximum inventory size
+    private static final int MAX_SIZE = 27*2;
     private DefaultedList<ItemStack> inventory;
     protected PlayerRemainsEntity(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
@@ -80,22 +82,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 if(getEntityWorld().isClient) return true;
                 this.dropInventory();
                 this.clearInventory();
-                Vec3d center = this.getPos();
-                double radius = 10.0;
-                Box box = new Box(
-                        center.x - radius, center.y - (radius/2), center.z - radius,
-                        center.x + radius, center.y + (radius/2), center.z + radius
-                );
-                List<LivingEntity> entities = this.getWorld().getEntitiesByClass(
-                        LivingEntity.class,
-                        box,
-                        e -> e.squaredDistanceTo(center) <= radius * radius
-                );
-                for (LivingEntity entity : entities) {
-                   if (entity instanceof ServerPlayerEntity playerEntity) {
-                       playerEntity.closeHandledScreen();
-                   }
-                }
                 this.discard();
                 return true;
             }
@@ -116,8 +102,14 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             return ActionResult.PASS;
         }
         this.open(player);
-        return ActionResult.SUCCESS; // Prevent further interaction processing
+        return ActionResult.SUCCESS;
     }
+
+    @Override
+    public boolean canUsePortals() {
+        return false;
+    }
+
     @Override
     protected void dropInventory() {
         for (ItemStack stack : inventory) {
@@ -135,14 +127,15 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             }
         }
     }
+
     @Override
     public void onPlayerCollision(PlayerEntity player) {
         if (this.getWorld().isClient) return;
         if (this.playerFor == null) return;
-        if (!player.getGameProfile().getName().equals(playerFor.getEntityName())) return;
-        for (int i = 0; i < inventory.size(); i++) {
-            if (!player.getInventory().insertStack(inventory.get(i))) {
-                player.dropItem(inventory.get(i), false);
+        if (player != playerFor) return;
+        for (ItemStack stack : inventory) {
+            if (!player.getInventory().insertStack(stack)) {
+                player.dropItem(stack, true);
             } else {
                 this.getWorld().playSound(
                         null,
@@ -156,7 +149,7 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
                 );
             }
         }
-
+        this.clear();
         discard();
     }
     @Override
@@ -228,11 +221,11 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     }
     @Override
     public boolean isPushable() {
-        return true;
+        return false;
     }
     @Override
     public boolean isPushedByFluids() {
-        return true;
+        return false;
     }
     //region// No clue //
     @Override
