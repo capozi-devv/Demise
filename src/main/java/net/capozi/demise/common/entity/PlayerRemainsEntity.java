@@ -115,31 +115,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             }
         }
     }
-
-    @Override
-    public void onPlayerCollision(PlayerEntity player) {
-        if (this.getWorld().isClient) return;
-        if (this.playerFor == null) return;
-        if (player != playerFor) return;
-        for (ItemStack stack : inventory) {
-            if (!player.getInventory().insertStack(stack)) {
-                player.dropItem(stack, true);
-            } else {
-                this.getWorld().playSound(
-                        null,
-                        player.getX(),
-                        player.getY(),
-                        player.getZ(),
-                        SoundEvents.ENTITY_ITEM_PICKUP,
-                        SoundCategory.PLAYERS,
-                        0.2F,
-                        (player.getSoundPitch() - player.getSoundPitch()) * 0.7F + 1.0F * 2.0F
-                );
-            }
-        }
-        this.clear();
-        discard();
-    }
     @Override
     public DefaultedList<ItemStack> getInventory() {
         return inventory;
