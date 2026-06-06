@@ -137,6 +137,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     public void resetInventory() {
         this.inventory = DefaultedList.ofSize(MAX_SIZE, ItemStack.EMPTY);
     }
+
+    @Override
+    public boolean canUsePortals(boolean allowVehicles) {
+        return false;
+    }
+
     @Override
     public int size() {
         return MAX_SIZE;
@@ -161,29 +167,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
             }
             return result;
         }
-    }
-    @Override
-    public void onPlayerCollision(PlayerEntity player) {
-        if (this.getWorld().isClient) return;
-        if (this.player == null) return;
-        if (!player.getGameProfile().getName().equals(this.player.getNameForScoreboard())) return;
-        for (int i = 0; i < inventory.size(); i++) {
-            if (!player.getInventory().insertStack(inventory.get(i))) {
-                player.dropItem(inventory.get(i), false);
-            } else {
-                this.getWorld().playSound(
-                        null,
-                        player.getX(),
-                        player.getY(),
-                        player.getZ(),
-                        SoundEvents.ENTITY_ITEM_PICKUP,
-                        SoundCategory.PLAYERS,
-                        0.2F,
-                        (player.getSoundPitch() - player.getSoundPitch()) * 0.7F + 1.0F * 2.0F
-                );
-            }
-        }
-        discard();
     }
     @Override
     public ItemStack removeStack(int slot) {
