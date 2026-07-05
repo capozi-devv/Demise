@@ -49,7 +49,7 @@ public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEnt
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)renderState.age / 20));
         renderState.itemRenderState.render(matrixStack, queue, renderState.light, OverlayTexture.DEFAULT_UV, 0xffffff);
         matrixStack.pop();
-        if(renderState.remains.getCustomName() != null) {
+        if(renderState.displayName != null) {
             this.renderLabelIfPresent(renderState, matrixStack, queue, cameraState);
         }
     }
@@ -58,6 +58,5 @@ public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEnt
     public void updateRenderState(PlayerRemainsEntity livingEntity, PlayerRemainsEntityRenderState livingEntityRenderState, float f) {
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
         resolver.clearAndUpdate(livingEntityRenderState.itemRenderState, stack, ItemDisplayContext.GROUND, null, null, 0);
-        livingEntityRenderState.remains = livingEntity;
     }
 }
