@@ -45,8 +45,8 @@ public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEnt
         matrixStack.push();
         matrixStack.scale(1.7f, 1.7f, 1.7f);
         matrixStack.translate(0, 0.2, 0);
-        matrixStack.translate(0, (abs(sin((float)renderState.remains.age / 15) + 1) / 7), 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)renderState.remains.age / 20));
+        matrixStack.translate(0, (abs(sin((float)renderState.age / 15) + 1) / 7), 0);
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)renderState.age / 20));
         renderState.itemRenderState.render(matrixStack, queue, renderState.light, OverlayTexture.DEFAULT_UV, 0xffffff);
         matrixStack.pop();
         if(renderState.remains.getCustomName() != null) {
