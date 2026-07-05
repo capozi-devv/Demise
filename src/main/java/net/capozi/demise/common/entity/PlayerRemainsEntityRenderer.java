@@ -3,14 +3,21 @@ package net.capozi.demise.common.entity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.ItemModelManager;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.state.EntityRenderState;
+import net.minecraft.client.render.entity.state.LivingEntityRenderState;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
@@ -21,29 +28,36 @@ import static java.lang.Math.abs;
 import static java.lang.Math.sin;
 
 @Environment(EnvType.CLIENT)
-public class PlayerRemainsEntityRenderer extends LivingEntityRenderer<PlayerRemainsEntity, PlayerRemainsEntityModel<PlayerRemainsEntity>> {
+public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEntity, PlayerRemainsEntityRenderState> {
+    private final ItemModelManager resolver;
     public PlayerRemainsEntityRenderer(EntityRendererFactory.Context ctx) {
-        super(ctx, new PlayerRemainsEntityModel<>(), 0.3f);
+        super(ctx);
+        resolver = ctx.getItemModelManager();
     }
 
-    ItemRenderer itemRenderer = MinecraftClient.getInstance().getItemRenderer();
     @Override
-    public void render(PlayerRemainsEntity entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, int light) {
-        ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
+    public PlayerRemainsEntityRenderState createRenderState() {
+        return new PlayerRemainsEntityRenderState();
+    }
+
+    @Override
+    public void render(PlayerRemainsEntityRenderState renderState, MatrixStack matrixStack, OrderedRenderCommandQueue queue, CameraRenderState cameraState) {
         matrixStack.push();
         matrixStack.scale(1.7f, 1.7f, 1.7f);
         matrixStack.translate(0, 0.2, 0);
-        matrixStack.translate(0, (abs(sin((float)entity.age / 15) + 1) / 7), 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)entity.age / 20));
-        itemRenderer.renderItem(stack, ModelTransformationMode.GROUND, false, matrixStack, vertexConsumers, light, 0, itemRenderer.getModel(stack, entity.getWorld(), null, 0));
+        matrixStack.translate(0, (abs(sin((float)renderState.remains.age / 15) + 1) / 7), 0);
+        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float)renderState.remains.age / 20));
+        renderState.itemRenderState.render(matrixStack, queue, renderState.light, OverlayTexture.DEFAULT_UV, 0xffffff);
         matrixStack.pop();
-        if(entity.getCustomName() != null) {
-           this.renderLabelIfPresent(entity, entity.getCustomName(), matrixStack, vertexConsumers, light, tickDelta);
+        if(renderState.remains.getCustomName() != null) {
+            this.renderLabelIfPresent(renderState, matrixStack, queue, cameraState);
         }
     }
 
     @Override
-    public Identifier getTexture(PlayerRemainsEntity entity) {
-        return null;
+    public void updateRenderState(PlayerRemainsEntity livingEntity, PlayerRemainsEntityRenderState livingEntityRenderState, float f) {
+        ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
+        resolver.clearAndUpdate(livingEntityRenderState.itemRenderState, stack, ItemDisplayContext.GROUND, null, null, 0);
+        livingEntityRenderState.remains = livingEntity;
     }
 }

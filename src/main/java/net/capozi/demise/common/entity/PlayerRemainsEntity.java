@@ -19,6 +19,7 @@ import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.screen.GenericContainerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -47,9 +48,9 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     }
     public static DefaultAttributeContainer.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0f)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 100f)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 0f);
+                .add(EntityAttributes.MOVEMENT_SPEED, 0f)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 100f)
+                .add(EntityAttributes.FOLLOW_RANGE, 0f);
     }
 
     @Override
@@ -57,30 +58,31 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         return true;
     }
 
+//    @Override
+//    public void readCustomDataFromNbt(NbtCompound nbt) {
+//        super.readCustomDataFromNbt(nbt);
+//        Inventories.readNbt(nbt, this.getInventory(), wrapper);
+//    }
+//    @Override
+//    public void writeCustomDataToNbt(NbtCompound nbt) {
+//        super.writeCustomDataToNbt(nbt);
+//        Inventories.writeNbt(nbt, this.getInventory(), wrapper);
+//    }
+
     @Override
-    public void readCustomDataFromNbt(NbtCompound nbt) {
-        super.readCustomDataFromNbt(nbt);
-        Inventories.readNbt(nbt, this.getInventory(), wrapper);
-    }
-    @Override
-    public void writeCustomDataToNbt(NbtCompound nbt) {
-        super.writeCustomDataToNbt(nbt);
-        Inventories.writeNbt(nbt, this.getInventory(), wrapper);
-    }
-    @Override
-    public boolean damage(DamageSource source, float amount) {
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
         if (source.getAttacker() instanceof PlayerEntity player) {
             if(player.isSneaking()) {
-                if(getEntityWorld().isClient) return true;
-                this.dropInventory();
+                if(getEntityWorld().isClient()) return true;
+                this.dropInventory(world);
                 this.clearInventory();
-                Vec3d center = this.getPos();
+                Vec3d center = this.getEntityPos();
                 double radius = 10.0;
                 Box box = new Box(
                         center.x - radius, center.y - (radius/2), center.z - radius,
                         center.x + radius, center.y + (radius/2), center.z + radius
                 );
-                List<LivingEntity> entities = this.getWorld().getEntitiesByClass(
+                List<LivingEntity> entities = this.getEntityWorld().getEntitiesByClass(
                         LivingEntity.class,
                         box,
                         e -> e.squaredDistanceTo(center) <= radius * radius
@@ -106,20 +108,22 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         ){
             return ActionResult.PASS;
         }
-        if (player.getWorld().isClient) {
+        if (player.getEntityWorld().isClient()) {
             return ActionResult.PASS;
         }
         this.open(player);
         return ActionResult.SUCCESS; // Prevent further interaction processing
     }
+
     @Override
-    protected void dropInventory() {
+    protected void dropInventory(ServerWorld world) {
         for (ItemStack stack : inventory) {
             if (stack.isEmpty()) continue;
-            ItemEntity itemEntity = new ItemEntity(getWorld(), getX(), getY(), getZ(), stack.copy());
-            getWorld().spawnEntity(itemEntity);
+            ItemEntity itemEntity = new ItemEntity(world, getX(), getY(), getZ(), stack.copy());
+            world.spawnEntity(itemEntity);
         }
     }
+
     public void addInventoryStack(ItemStack stack) {
         if (stack.isEmpty()) return;
         for (int i = 0; i < MAX_SIZE; i++) {
@@ -189,10 +193,6 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
         inventory.clear();
     }
     @Override
-    public Iterable<ItemStack> getArmorItems() {
-        return Collections.emptyList();
-    }
-    @Override
     public ItemStack getEquippedStack(EquipmentSlot slot) {
         return new ItemStack(Items.AIR);
     }
@@ -216,6 +216,12 @@ public class PlayerRemainsEntity extends LivingEntity implements VehicleInventor
     protected void initDataTracker(DataTracker.Builder builder) {
         super.initDataTracker(builder);
     }
+
+    @Override
+    public @org.jspecify.annotations.Nullable RegistryKey<LootTable> getLootTable() {
+        return null;
+    }
+
     @Override
     public void setLootTable(@Nullable RegistryKey<LootTable> lootTable) {
 

@@ -1,14 +1,12 @@
 package net.capozi.demise.common;
 
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
-import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
-import net.minecraft.world.GameRules;
+import net.capozi.demise.Demise;
+import net.fabricmc.fabric.api.gamerule.v1.GameRuleBuilder;
+import net.minecraft.world.rule.GameRule;
+import net.minecraft.world.rule.GameRuleCategory;
+import net.minecraft.world.rule.GameRules;
 
 public class GameruleRegistry {
-    public static final GameRules.Key<GameRules.BooleanRule> SAVE_TRINKETS = GameRuleRegistry.register("saveTrinkets", GameRules.Category.PLAYER, GameRuleFactory.createBooleanRule(true));
-    public static final GameRules.Key<GameRules.BooleanRule> CREATE_GRAVE = GameRuleRegistry.register("createGraves", GameRules.Category.PLAYER, GameRuleFactory.createBooleanRule(true));
-
-    public static void register() {
-
-    }
+    public static final GameRule<Boolean> CREATE_GRAVE = GameRuleBuilder.forBoolean(true).category(GameRuleCategory.PLAYER).buildAndRegister(Demise.id("create_graves"));
+    public static void register() {}
 }

@@ -1,12 +1,14 @@
 {
-	"required": true,
-	"package": "net.capozi.demise.mixin",
-	"compatibilityLevel": "JAVA_21",
-	"mixins": [
-		"LivingEntityMixin",
-		"PlayerEntityMixin"
-	],
-	"injectors": {
-		"defaultRequire": 1
+  "required": true,
+  "package": "net.capozi.demise.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LivingEntityMixin",
+    "PlayerEntityMixin",
+    "access.EntityEquipmentAccessor",
+    "access.PlayerInventoryAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
 	}
 }
