@@ -34,7 +34,6 @@ public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEnt
         super(ctx);
         resolver = ctx.getItemModelManager();
     }
-
     @Override
     public PlayerRemainsEntityRenderState createRenderState() {
         return new PlayerRemainsEntityRenderState();
@@ -56,6 +55,7 @@ public class PlayerRemainsEntityRenderer extends EntityRenderer<PlayerRemainsEnt
 
     @Override
     public void updateRenderState(PlayerRemainsEntity livingEntity, PlayerRemainsEntityRenderState livingEntityRenderState, float f) {
+        super.updateRenderState(livingEntity, livingEntityRenderState, f);
         ItemStack stack = new ItemStack(Items.SKELETON_SKULL);
         resolver.clearAndUpdate(livingEntityRenderState.itemRenderState, stack, ItemDisplayContext.GROUND, null, null, 0);
     }

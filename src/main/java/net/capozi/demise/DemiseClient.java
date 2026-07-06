@@ -11,6 +11,6 @@ import net.minecraft.client.render.entity.EntityRendererFactories;
 public class DemiseClient implements ClientModInitializer {
      @Override
      public void onInitializeClient() {
-         EntityRendererRegistry.register(EntityTypeRegistry.PLAYER_REMAINS_TYPE, PlayerRemainsEntityRenderer::new);
+         EntityRendererRegistryImpl.register(EntityTypeRegistry.PLAYER_REMAINS_TYPE, PlayerRemainsEntityRenderer::new);
      }
 }
